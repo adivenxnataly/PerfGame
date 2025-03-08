@@ -42,6 +42,7 @@ this is module so install using Magisk/KSU app:
 ### Tested on
 - Android 12 - MIUI 13
 
-### etc.
-[Game Interventions](https://developer.android.com/games/optimize/adpf/gamemode/gamemode-interventions)<br>
-[FPS Throttling](https://developer.android.com/games/optimize/adpf/gamemode/fps-throttling)
+### Source, etc.
+- [Game Interventions](https://developer.android.com/games/optimize/adpf/gamemode/gamemode-interventions)<br>
+- [FPS Throttling](https://developer.android.com/games/optimize/adpf/gamemode/fps-throttling)<br>
+- [Module WebUI](https://kernelsu.org/guide/module-webui.html)
