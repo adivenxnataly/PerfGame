@@ -1,0 +1,6 @@
+id=PerfGame
+name=PerfGame
+version=v0.1-@prerelease
+versionCode=00001
+author=Adinata | @Adivenxnataly
+description=Enable custom resolution & FPS patching for better performance.
