@@ -25,7 +25,7 @@ Android FPS throttling is a Game Mode intervention that helps games run at a mor
 ## How to use?
 This module is based on WebUI (KernelSU), but support Magisk with KsuWebUI.
  - after reboot, you just need to enter the KSU/WebUI application, and select the `PerfGame` module and you will enter the game configuration display :
-![screenshot](https://github.com/adivenxnataly/PerfGame/blob/main/files/io.github.a13e300.ksuwebu.jpg)
+![screenshot](https://github.com/adivenxnataly/PerfGame/blob/main/files/perfgame.jpg)
 <br>
 
 **this configurations supports:**
