@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (gameList.length === 0) {
             noGamesMessage.classList.remove('hidden');
-            modeIndicator.classList.remove('bg-red-500', 'bg-blue-500', 'bg-orange-500');
+            modeIndicator.classList.remove('bg-red-600', 'bg-green-400', 'bg-orange-400');
             modeIndicator.classList.add('bg-gray-500');
             gamesDetected = false;
         } else {
@@ -213,43 +213,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 const resolutionValue = document.getElementById(`resolution-value-${packageName}`);
                 const fpsSlider = document.getElementById(`fps-${packageName}`);
                 const fpsValue = document.getElementById(`fps-value-${packageName}`);
-
                 if (!output || output.trim() === "" || output.trim().toLowerCase() === "null") {
                     configuredText.classList.add('hidden');
-
-
-                    const savedConfig = localStorage.getItem(`gameConfig_${packageName}`);
-                    if (savedConfig) {
-                        const config = JSON.parse(savedConfig);
-                        if (config.downscaleFactor) {
-                            resolutionSlider.value = config.downscaleFactor;
-                            resolutionValue.textContent = `${Math.round(config.downscaleFactor * 100)}%`;
-                            updateSliderFill(resolutionSlider);
+                    if (!document.getElementById(`reseted-text-${packageName}`).classList.contains('hidden')) {
+                        const savedConfig = localStorage.getItem(`gameConfig_${packageName}`);
+                        if (savedConfig) {
+                            const config = JSON.parse(savedConfig);
+                            if (config.downscaleFactor) {
+                                resolutionSlider.value = config.downscaleFactor;
+                                resolutionValue.textContent = `${Math.round(config.downscaleFactor * 100)}%`;
+                                updateSliderFill(resolutionSlider);
+                            }
+                            if (config.fps) {
+                                fpsSlider.value = config.fps;
+                                fpsValue.textContent = config.fps;
+                                updateSliderFill(fpsSlider);
+                            }
+                            configuredText.classList.remove('hidden');
                         }
-                        if (config.fps) {
-                            fpsSlider.value = config.fps;
-                            fpsValue.textContent = config.fps;
-                            updateSliderFill(fpsSlider);
-                        }
-                        configuredText.classList.remove('hidden');
                     }
                     return;
                 }
-
                 const config = parseGameOverlayConfig(output.trim());
-
                 if (config.downscaleFactor) {
                     resolutionSlider.value = config.downscaleFactor;
                     resolutionValue.textContent = `${Math.round(config.downscaleFactor * 100)}%`;
                     updateSliderFill(resolutionSlider);
                 }
-
                 if (config.fps) {
                     fpsSlider.value = config.fps;
                     fpsValue.textContent = config.fps;
                     updateSliderFill(fpsSlider);
                 }
-
                 configuredText.classList.remove('hidden');
                 localStorage.setItem(`gameConfig_${packageName}`, JSON.stringify(config));
             });
@@ -307,6 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
         executeCommand(deleteCommand,
             function(output) {
                 alert(`Configuration reset for ${packageName}`);
+                localStorage.removeItem(`gameConfig_${packageName}`);
                 const configuredText = document.getElementById(`configured-text-${packageName}`);
                 configuredText.classList.add('hidden');
                 const resetedText = document.getElementById(`reseted-text-${packageName}`);
