@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'com.nexon.bluearchive': 'Blue Archive',
         'com.bushiroad.en.bangdreamgbp': 'BanG Dream!',
         'com.sega.pjsekai': 'Project Sekai',
+        'com.netease.newspike': 'Blood Strike',
     };
 
     let isModeOptionsVisible = false;
