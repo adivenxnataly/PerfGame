@@ -40,7 +40,7 @@ you can use manual step to adding `packagename` with this instructions : <br>
 • first, extract `PerfGamevx.x-release.zip` <br>
 • go to the `/webroot` folder <br>
 • add the `gamelist.txt` file <br>
-• open file and type like this: <br>
+• open file and type `packagename` like this: <br>
 
     com.mobile.legends
     com.miHoYo.GenshinImpact
