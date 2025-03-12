@@ -16,7 +16,7 @@ ui_print "  Version : $(grep_prop version $MODPATH/module.prop)"
 ui_print "  VersionCode : $(grep_prop versionCode $MODPATH/module.prop)"
 SDK=$API
 ui_print "  SDK : $SDK (API)"
-if [ $SDK == 31 ]; then
+if [ $SDK -eq 31 ]; then
     sleep 1
     ui_print "  SDK version is supported. Continuing..."
 elif [ $SDK -gt 31 ]; then
@@ -57,35 +57,39 @@ else
 fi
 
 ui_print ""
-ui_print " • Find Game List.."; sleep 1
-package=$(pm list packages -3 | grep -E 'com.mobile.legends|com.miHoYo.GenshinImpact|com.HoYoverse.Nap|com.kurogame.wutheringwaves.global|com.tencent.ig|com.HoYoverse.hkrpgoversea|com.garena.game.codm|com.activision.callofduty.warzone|com.levelinfinite.sgameGlobal.midaspay|com.proximabeta.mf.uamo|com.carxtech.sr|com.levelinfinite.hotta.gp|com.kurogame.gplay.punishing.grayraven.en|com.miHoYo.bh3global|com.seasun.snowbreak.google|com.nexon.bluearchive|com.bushiroad.en.bangdreamgbp|com.sega.pjsekai' | sed 's/package://g' | sed 's/^/   /'); sleep 2
+ui_print " • Find Game List.. "
+ui_print " - you can adding game manually, follow instruction on README.md in my Github!"; sleep 1
+package=$(pm list packages -3 | grep -E 'com.mobile.legends|com.miHoYo.GenshinImpact|com.HoYoverse.Nap|com.kurogame.wutheringwaves.global|com.tencent.ig|com.HoYoverse.hkrpgoversea|com.garena.game.codm|com.activision.callofduty.warzone|com.levelinfinite.sgameGlobal.midaspay|com.proximabeta.mf.uamo|com.carxtech.sr|com.levelinfinite.hotta.gp|com.kurogame.gplay.punishing.grayraven.en|com.miHoYo.bh3global|com.seasun.snowbreak.google|com.nexon.bluearchive|com.bushiroad.en.bangdreamgbp|com.sega.pjsekai|com.netease.newspike' | sed 's/package://g' | sed 's/^/   /'); sleep 2
 ui_print "   List :"
 sleep 1
 ui_print "$package"
 ui_print ""
-awk '
-    /const gameList = \[/ {
-        print $0
-
-        while ("pm list packages -3" | getline package) {
-            if (package ~ /com.mobile.legends|com.miHoYo.GenshinImpact|com.HoYoverse.Nap|com.kurogame.wutheringwaves.global|com.tencent.ig|com.HoYoverse.hkrpgoversea|com.garena.game.codm|com.activision.callofduty.warzone|com.levelinfinite.sgameGlobal.midaspay|com.proximabeta.mf.uamo|com.carxtech.sr|com.levelinfinite.hotta.gp|com.kurogame.gplay.punishing.grayraven.en|com.miHoYo.bh3global|com.seasun.snowbreak.google|com.nexon.bluearchive|com.bushiroad.en.bangdreamgbp|com.sega.pjsekai/) {
-                split(package, arr, ":")
-                print "            \"" arr[2] "\","
-            }
-        }
-        
-        next
+PACKAGES=$(pm list packages -3 | awk -F: '
+    $2 ~ /com\.mobile\.legends|com\.miHoYo\.GenshinImpact|com\.HoYoverse\.Nap|com\.kurogame\.wutheringwaves\.global|com\.tencent\.ig|com\.HoYoverse\.hkrpgoversea|com\.garena\.game\.codm|com\.activision\.callofduty\.warzone|com\.levelinfinite\.sgameGlobal\.midaspay|com\.proximabeta\.mf\.uamo|com\.carxtech\.sr|com\.levelinfinite\.hotta\.gp|com\.kurogame\.gplay\.punishing\.grayraven\.en|com\.miHoYo\.bh3global|com\.seasun\.snowbreak\.google|com\.nexon\.bluearchive|com\.bushiroad\.en\.bangdreamgbp|com\.sega\.pjsekai|com\.netease\.newspike/ {
+        packages = packages "\"" $2 "\", "
     }
-    
-    { print $0 }
-' "$HTML" > "$HTML.tmp" && mv "$HTML.tmp" "$HTML"
-sleep 2
-if [ $? -eq 0 ]; then
-    ui_print "   Success, Game List add to $HTML"
+    END {
+        if (length(packages) > 0) {
+            packages = substr(packages, 1, length(packages) - 2)
+        }
+        print packages
+    }
+')
+
+if [ -z "$PACKAGES" ]; then
+    ui_print "   No packages found!"
+    ui_print "   Failed to add Gamelist to $HTML"
     ui_print ""
-    sleep 1
-else
-    ui_print "   Failed add Gamelist to $HTML"
     abort "   aborting..."
-    ui_print ""
+else
+    sed -i -E "s/(const gameList = \[)[^]]*(\];)/\1$PACKAGES\2/" "$HTML"
+    if [ $? -eq 0 ]; then
+        ui_print "   Success, Game List add to $HTML"
+        ui_print ""
+        sleep 1
+    else
+        ui_print "   Failed add Gamelist to $HTML"
+        abort "   aborting..."
+        ui_print ""
+    fi
 fi
