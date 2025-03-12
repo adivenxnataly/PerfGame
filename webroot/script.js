@@ -1,4 +1,26 @@
-document.addEventListener('DOMContentLoaded', function() {
+async function fetchGameList() {
+    try {
+        const response = await fetch('gamelist.txt');
+        if (response.ok) {
+            const text = await response.text();
+            const fileGameList = text.split('\n').filter(line => line.trim() !== "");
+            return fileGameList;
+        } else {
+            throw new Error('Failed to load gamelist.txt');
+        }
+    } catch (error) {
+        console.error(error.message);
+        return [];
+    }
+}
+
+fetchGameList().then(fileGameList => {
+    combinedGameList = [...new Set([...combinedGameList, ...fileGameList])];
+});
+
+let combinedGameList = [...gameList];
+
+document.addEventListener('DOMContentLoaded', async function() {
     const gameListContainer = document.getElementById('game-list');
     const noGamesMessage = document.getElementById('no-games-message');
     const modeIndicator = document.querySelector('.mode-indicator');
@@ -37,10 +59,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let gamesDetected = false;
     let currentMode = localStorage.getItem('selectedMode') || 'Performance';
 
-    function loadGameList() {
-        console.log('Games found:', gameList);
+    const fileGameList = await fetchGameList();
+    combinedGameList = [...new Set([...combinedGameList, ...fileGameList])];
 
-        if (gameList.length === 0) {
+    function loadGameList() {
+
+        if (combinedGameList.length === 0) {
             noGamesMessage.classList.remove('hidden');
             modeIndicator.classList.remove('bg-red-600', 'bg-green-400', 'bg-orange-400');
             modeIndicator.classList.add('bg-gray-500');
@@ -52,10 +76,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
             setMode(currentMode);
 
-            gameList.forEach(game => {
-                executeCommand(`cmd game mode ${currentMode.toLowerCase()} ${game}`);
-                addGameConfiguration(game);
-                updateGameConfigurationUI(game);
+            combinedGameList.forEach(game => {
+                if (gameNameMapping[game]) {
+                    executeCommand(`cmd game mode ${currentMode.toLowerCase()} ${game}`);
+                    addGameConfiguration(game);
+                    updateGameConfigurationUI(game);
+                } else {
+                    console.warn(`Package name not supported: ${game}`);
+                    executeCommand(`cmd game mode ${currentMode.toLowerCase()} ${game}`);
+                    addGameConfiguration(game);
+                    updateGameConfigurationUI(game);
+                }
             });
         }
     }
@@ -67,14 +98,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getGameIcon(packageName) {
-        const webpPath = `/icons/${packageName}.webp`;
-        const pngPath = `/icons/${packageName}.png`;
+        const externalWebpUrl = `https://github.com/adivenxnataly/PerfGame/blob/main/webroot/icons/${packageName}.webp?raw=true`;
+        const externalPngUrl = `https://github.com/adivenxnataly/PerfGame/blob/main/webroot/icons/${packageName}.png?raw=true`;
 
-        return [webpPath,
-            pngPath];
+        return [externalWebpUrl, externalPngUrl];
     }
 
     function addGameConfiguration(packageName) {
+
         const gameContainer = document.createElement('div');
         gameContainer.className = 'container rounded-3xl p-4 mb-4 flex items-center space-x-4 w-full max-w-md';
 
@@ -82,11 +113,11 @@ document.addEventListener('DOMContentLoaded', function() {
         gameIcon.alt = `${packageName} game icon`;
         gameIcon.className = 'w-16 h-16 rounded';
 
-        const [webpPath,
-            pngPath] = getGameIcon(packageName);
-        gameIcon.src = webpPath;
+        const [externalWebpUrl, externalPngUrl] = getGameIcon(packageName);
+
+        gameIcon.src = externalWebpUrl;
         gameIcon.onerror = function() {
-            this.src = pngPath;
+            this.src = externalPngUrl;
             this.onerror = function() {
                 this.src = '/icons/default.png';
             };
@@ -100,6 +131,66 @@ document.addEventListener('DOMContentLoaded', function() {
         const gameName = document.createElement('h2');
         gameName.className = 'text-xl font-bold';
         gameName.textContent = getGameName(packageName);
+        gameContent.appendChild(gameName);
+
+        if (!gameNameMapping[packageName]) {
+            const unsupportedIconContainer = document.createElement('div');
+            unsupportedIconContainer.style.position = 'relative';
+            unsupportedIconContainer.style.display = 'inline-block';
+
+            const unsupportedIcon = document.createElement('i');
+            unsupportedIcon.className = 'fas fa-exclamation-circle';
+            unsupportedIcon.style.fontSize = '18px';
+            unsupportedIcon.style.color = '#B80F0A';
+            unsupportedIcon.style.marginLeft = '8px';
+            unsupportedIcon.style.cursor = 'pointer';
+
+            const tooltip = document.createElement('div');
+            tooltip.className = 'hide';
+            tooltip.textContent = 'not fully supported!';
+            tooltip.style.position = 'absolute';
+            tooltip.style.backgroundColor = '#B80F0A';
+            tooltip.style.color = 'white';
+            tooltip.style.padding = '2px 6px';
+            tooltip.style.borderRadius = '8px';
+            tooltip.style.fontSize = '10px';
+            tooltip.style.display = 'none';
+            tooltip.style.zIndex = '1000';
+            tooltip.style.top = '150%';
+            tooltip.style.whiteSpace = 'nowrap';
+
+            unsupportedIcon.addEventListener('click', function(event) {
+                event.stopPropagation();
+
+                tooltip.classList.remove('hide');
+                tooltip.classList.add('show');
+                tooltip.style.display = 'block';
+                tooltip.style.transform = 'translateX(-30%)';
+            });
+
+            document.addEventListener('click', function(event) {
+                const isClickInsideTooltip = tooltip.contains(event.target);
+                const isClickOnIcon = unsupportedIcon.contains(event.target);
+
+                if (!isClickInsideTooltip && !isClickOnIcon) {
+                    tooltip.classList.remove('show');
+                    tooltip.classList.add('hide');
+
+                    tooltip.addEventListener('animationend', function() {
+                        if (tooltip.classList.contains('hide')) {
+                            tooltip.style.display = 'none';
+                        }
+                    },
+                        {
+                            once: true
+                        });
+                }
+            });
+
+            unsupportedIconContainer.appendChild(unsupportedIcon);
+            unsupportedIconContainer.appendChild(tooltip);
+            gameName.appendChild(unsupportedIconContainer);
+        }
         gameContent.appendChild(gameName);
 
         const configuredText = document.createElement('span');
@@ -120,13 +211,14 @@ document.addEventListener('DOMContentLoaded', function() {
         resolutionInfo.textContent = 'Loading resolution...';
         gameContent.appendChild(resolutionInfo);
 
-        getResolutionHeight(packageName, function(resolutionHeight) {
-            if (resolutionHeight) {
-                resolutionInfo.textContent = `${resolutionHeight}P`;
-            } else {
-                resolutionInfo.classList.add('hidden');
-            }
-        });
+        getResolutionHeight(packageName,
+            function(resolutionHeight) {
+                if (resolutionHeight) {
+                    resolutionInfo.textContent = `${resolutionHeight}P`;
+                } else {
+                    resolutionInfo.classList.add('hidden');
+                }
+            });
 
         const resolutionConfig = document.createElement('div');
         resolutionConfig.className = 'mt-2';
@@ -481,7 +573,7 @@ document.addEventListener('DOMContentLoaded', function() {
     helpButton.addEventListener('click',
         function(event) {
             event.preventDefault();
-            popupMessage.textContent = "This Global Mode is the mode used by Games (that support it), this is provided by Android (API 31).";
+            popupMessage.textContent = "This Global Mode is the mode used by Games (that support it), this is provided by Game Interventions (API 31).";
             popup.classList.remove('hidden');
         });
 
