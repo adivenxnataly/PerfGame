@@ -14,12 +14,12 @@ Enabling resize can result in a reduction of up to 30% of GPU and 10% of overall
 An unpaced game that is GPU bound is likely to experience higher frame rates during reduced GPU loads.
 We strongly recommend that all games are well paced, because uneven frame rates significantly impact how users perceive performance.
 <br>
->The interventions are available in Android 12.
+> The interventions are available in Android 12.
 
 **FPS Throttling**<br>
 Android FPS throttling is a Game Mode intervention that helps games run at a more stable frame rate in order to reduce battery consumption.
 <br>
->The Interventions are available in Android 13.
+> The Interventions are available in Android 13.
 
 
 ## How to use?
@@ -31,13 +31,15 @@ This module is based on WebUI (KernelSU), but support Magisk with KsuWebUI.
 **this configurations supports:**
  - **Global Mode**: Performance (default), Balance, Saver
  - **Game-Specific Mode**: Resolution & FPS.
- >I also added icon for resolution used by Games (only support `Unity-based` games).
+ > I also added icon for resolution used by Games <br>
+ > only support `Unity-based` games.
 
 ### How for not supported games? 
-you can use manual step to adding `packagename` with this instructions : <br>
+you can use manual step to adding `packagename` with this instructions. <br>
+there are **two different instructions**, for each scenario: <br>
 
 **1. if the module cannot be installed:** <br>
-• first, extract `PerfGamevx.x-release.zip` <br>
+• first, extract `PerfGamevx.x-release.zip` (recommend to extract in empty folder)<br>
 • go to the `/webroot` folder <br>
 • add the `gamelist.txt` file <br>
 • open file and type `packagename` like this: <br>
@@ -45,10 +47,24 @@ you can use manual step to adding `packagename` with this instructions : <br>
     com.mobile.legends
     com.miHoYo.GenshinImpact
 
-• done!
+• save and exit <br>
+• select all module files and folders:
+  ```
+PerfGamev1.1-release.zip
+├── /META-INF
+├── /webroot/
+│       ├── index.html
+│       ├── script.js
+│       └── gamelist.txt
+├─── customize.sh
+├─── module.prop
+└─── uninstall.sh
+```
+• compress back to `.zip` format (like on top) <br>
+• done, you can install the module! <br>
 
 **2. if you successfully install the module just use this:** <br>
-• open terminal (adb, Termux, etc.) with `su` (root access) and type :
+• open terminal (adb, Termux, etc) with `su` access and type :
 
      touch gamelist.txt /data/adb/modules/PerfGame/webroot/gamelist.txt
   
