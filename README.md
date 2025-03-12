@@ -31,7 +31,37 @@ This module is based on WebUI (KernelSU), but support Magisk with KsuWebUI.
 **this configurations supports:**
  - **Global Mode**: Performance (default), Balance, Saver
  - **Game-Specific Mode**: Resolution & FPS.
->I also added icon for resolution used by Games (only support `Unity-based` games).
+ >I also added icon for resolution used by Games (only support `Unity-based` games).
+
+### How for not supported games? 
+you can use manual step to adding `packagename` with this instructions : <br>
+
+**1. if the module cannot be installed:** <br>
+• first, extract `PerfGamevx.x-release.zip` <br>
+• go to the `/webroot` folder <br>
+• add the `gamelist.txt` file <br>
+• open file and type like this: <br>
+
+    com.mobile.legends
+    com.miHoYo.GenshinImpact
+
+• done!
+
+**2. if you successfully install the module just use this:** <br>
+• open terminal (adb, Termux, etc.) with `su` (root access), and type :
+
+     touch gamelist.txt /data/adb/modules/PerfGame/webroot/gamelist.txt
+  
+• then, type the `packagename` of the games :
+
+    echo "com.mobile.legends" > /data/adb/modules/PerfGame/webroot/gamelist.txt
+    
+> or for two games or more, you can type `\n`, like this: `echo "com.mobile.legends\ncom.miHoYo.GenshinImpact"`
+
+
+• done! <br>
+
+now you can configure games that are `not supported` by default by this module.
 
 #### Requirements
 this is module so install using Magisk/KSU app:
