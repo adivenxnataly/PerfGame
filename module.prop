@@ -1,6 +1,6 @@
 id=PerfGame
 name=PerfGame
-version=v1.0-release
-versionCode=10000
+version=v1.1-release
+versionCode=11000
 author=Adinata | @Adivenxnataly
 description=Enable custom resolution & frame-rate mechanism for your game.
