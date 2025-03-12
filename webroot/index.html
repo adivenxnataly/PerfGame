@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PerfGame</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body class="main-bg text-white">
     <body class="bg-neutral-900 text-white">
@@ -51,6 +52,7 @@
             top: 0;
             z-index: 1000;
             background-color: #111111;
+            box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.35);
         }
 
         @keyframes slideDownBounce {
@@ -75,6 +77,16 @@
             }
         }
 
+        @keyframes slideRightFade {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+                transform: translateX(20%);
+            }
+        }
+
         #mode-options.show {
             display: block;
             opacity: 1;
@@ -95,9 +107,23 @@
             border-radius: 0.5rem;
             padding: 0.5rem;
             font-weight: 500;
-            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.35);
+            box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.35);
             transform: translateY(-20px);
             transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .show {
+            display: block;
+            opacity: 1;
+            box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.35);
+            transform: translateX(50%);
+            animation: slideDownBounce 0.5s ease-out;
+        }
+
+        .hide {
+            opacity: 0;
+            transform: translateX(30%);
+            animation: slideRightFade 0.7s ease-in forwards;
         }
 
         #popup {
@@ -206,7 +232,7 @@
             margin-top: 5px;
             margin-right: 5px;
         }
-        
+
         .blue {
             display: inline-block;
             padding: 2px 4px;
