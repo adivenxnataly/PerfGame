@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         gameIcon.onerror = function() {
             this.src = externalPngUrl;
             this.onerror = function() {
-                this.src = '/icons/default.png';
+                this.src = `https://github.com/adivenxnataly/PerfGame/blob/main/webroot/icons/default.png?raw=true`;
             };
         };
 
