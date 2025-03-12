@@ -48,7 +48,7 @@ you can use manual step to adding `packagename` with this instructions : <br>
 • done!
 
 **2. if you successfully install the module just use this:** <br>
-• open terminal (adb, Termux, etc.) with `su` (root access), and type :
+• open terminal (adb, Termux, etc.) with `su` (root access) and type :
 
      touch gamelist.txt /data/adb/modules/PerfGame/webroot/gamelist.txt
   
@@ -56,14 +56,15 @@ you can use manual step to adding `packagename` with this instructions : <br>
 
     echo "com.mobile.legends" > /data/adb/modules/PerfGame/webroot/gamelist.txt
     
-> or for two games or more, you can type `\n`, like this: `echo "com.mobile.legends\ncom.miHoYo.GenshinImpact"`
+> or for two games or more, you can type `\n`, like this: <br>
+> `echo "com.mobile.legends\ncom.miHoYo.GenshinImpact"`
 
 
 • done! <br>
 
 now you can configure games that are `not supported` by default by this module.
 
-#### Requirements
+### Requirements
 this is module so install using Magisk/KSU app:
  [Download from Release page](https://github.com/adivenxnataly/PerfGame/releases)
 
