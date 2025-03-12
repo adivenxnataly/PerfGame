@@ -60,7 +60,7 @@ PerfGamev1.1-release.zip
 ├─── module.prop
 └─── uninstall.sh
 ```
-• compress back to `.zip` format (like on top) <br>
+• compress back to `.zip` format (make sure the folder/file contents are as above) <br>
 • done, you can install the module! <br>
 
 **2. if you successfully install the module just use this:** <br>
