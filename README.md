@@ -1,5 +1,5 @@
 ## PerfGame
-![banner](https://github.com/adivenxnataly/PerfGame/blob/main/files/perfbanner.png)
+![banner](https://github.com/adivenxnataly/PerfGame/blob/main/files/perfgame.v1.1.jpg)
 PerfGame is a module that implements "**Game Interventions**".
 
 What is **Game Interventions?** <br>
