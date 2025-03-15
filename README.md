@@ -29,8 +29,17 @@ This module is based on WebUI (KernelSU), but support Magisk with KsuWebUI.
 <br>
 
 **this configurations supports:**
- - **Global Mode**: Performance (default), Balance, Saver
- - **Game-Specific Mode**: Resolution & FPS.
+ - **Global Mode**: <br>
+   🔴 Performance (default) <br>
+   🟢 Balance <br>
+   🟠 Saver <br>
+ - **Game-Specific Mode**: <br>
+   🔵 **Resolution**: 30-100% <br>
+   🔵 **FPS**: 30-120 <br>
+ > [!NOTE]
+ > FPS is only change WindowManager backbuffer not in-game fps setting, customize based on game. <br>
+
+
  > I also added icon for resolution used by Games <br>
  > only support `Unity-based` games.
 
