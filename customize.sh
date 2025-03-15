@@ -59,13 +59,13 @@ fi
 ui_print ""
 ui_print " • Find Game List.. "
 ui_print " - you can adding game manually, follow instruction on README.md in my Github!"; sleep 1
-package=$(pm list packages -3 | grep -E 'com.mobile.legends|com.miHoYo.GenshinImpact|com.HoYoverse.Nap|com.kurogame.wutheringwaves.global|com.tencent.ig|com.HoYoverse.hkrpgoversea|com.garena.game.codm|com.activision.callofduty.warzone|com.levelinfinite.sgameGlobal.midaspay|com.proximabeta.mf.uamo|com.carxtech.sr|com.levelinfinite.hotta.gp|com.kurogame.gplay.punishing.grayraven.en|com.miHoYo.bh3global|com.seasun.snowbreak.google|com.nexon.bluearchive|com.bushiroad.en.bangdreamgbp|com.sega.pjsekai|com.netease.newspike' | sed 's/package://g' | sed 's/^/   /'); sleep 2
+package=$(pm list packages -3 | grep -E 'com.mobile.legends|com.miHoYo.GenshinImpact|com.HoYoverse.Nap|com.kurogame.wutheringwaves.global|com.tencent.ig|com.HoYoverse.hkrpgoversea|com.garena.game.codm|com.activision.callofduty.warzone|com.levelinfinite.sgameGlobal.midaspay|com.proximabeta.mf.uamo|com.carxtech.sr|com.levelinfinite.hotta.gp|com.kurogame.gplay.punishing.grayraven.en|com.miHoYo.bh3global|com.seasun.snowbreak.google|com.nexon.bluearchive|com.bushiroad.en.bangdreamgbp|com.sega.pjsekai|com.netease.newspike|com.sega.ColorfulStage.en' | sed 's/package://g' | sed 's/^/   /'); sleep 2
 ui_print "   List :"
 sleep 1
 ui_print "$package"
 ui_print ""
 PACKAGES=$(pm list packages -3 | awk -F: '
-    $2 ~ /com\.mobile\.legends|com\.miHoYo\.GenshinImpact|com\.HoYoverse\.Nap|com\.kurogame\.wutheringwaves\.global|com\.tencent\.ig|com\.HoYoverse\.hkrpgoversea|com\.garena\.game\.codm|com\.activision\.callofduty\.warzone|com\.levelinfinite\.sgameGlobal\.midaspay|com\.proximabeta\.mf\.uamo|com\.carxtech\.sr|com\.levelinfinite\.hotta\.gp|com\.kurogame\.gplay\.punishing\.grayraven\.en|com\.miHoYo\.bh3global|com\.seasun\.snowbreak\.google|com\.nexon\.bluearchive|com\.bushiroad\.en\.bangdreamgbp|com\.sega\.pjsekai|com\.netease\.newspike/ {
+    $2 ~ /com\.mobile\.legends|com\.miHoYo\.GenshinImpact|com\.HoYoverse\.Nap|com\.kurogame\.wutheringwaves\.global|com\.tencent\.ig|com\.HoYoverse\.hkrpgoversea|com\.garena\.game\.codm|com\.activision\.callofduty\.warzone|com\.levelinfinite\.sgameGlobal\.midaspay|com\.proximabeta\.mf\.uamo|com\.carxtech\.sr|com\.levelinfinite\.hotta\.gp|com\.kurogame\.gplay\.punishing\.grayraven\.en|com\.miHoYo\.bh3global|com\.seasun\.snowbreak\.google|com\.nexon\.bluearchive|com\.bushiroad\.en\.bangdreamgbp|com\.sega\.pjsekai|com\.netease\.newspike|com\.sega\.ColorfulStage/ {
         packages = packages "\"" $2 "\", "
     }
     END {
