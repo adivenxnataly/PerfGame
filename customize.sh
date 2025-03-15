@@ -80,7 +80,20 @@ if [ -z "$PACKAGES" ]; then
     ui_print "   No packages found!"
     ui_print "   Failed to add Gamelist to $HTML"
     ui_print ""
-    abort "   aborting..."
+    ui_print " • try to using gamelist.txt"
+    if [ -f "$MODPATH/webroot/gamelist.txt" ]; then
+        ui_print "   gamelist.txt found!"
+        if [ "$MODPATH/webroot/gamelist.tx" -eq 0 ]; then
+            ui_print "   not found any package in gamelist.txt"
+            abort "   aborting..."
+        else
+            ui_print "   success, package added!"
+            ui_print ""
+        fi
+    else
+        ui_print "   gamelist.txt not found!"
+        abort "   aborting..."
+    fi
 else
     sed -i -E "s/(const gameList = \[)[^]]*(\];)/\1$PACKAGES\2/" "$HTML"
     if [ $? -eq 0 ]; then
