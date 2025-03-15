@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         'com.bushiroad.en.bangdreamgbp': 'BanG Dream!',
         'com.sega.pjsekai': 'Project Sekai',
         'com.netease.newspike': 'Blood Strike',
+        'com.sega.ColorfulStage.en': 'ColorfulStage',
     };
 
     let isModeOptionsVisible = false;
