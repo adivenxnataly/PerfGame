@@ -1,4 +1,4 @@
-### PerfGame
+## PerfGame
 [![Releases](https://img.shields.io/github/v/release/adivenxnataly/PerfGame?color=green&label=Release&logo=github)](https://github.com/adivenxnataly/PerfGame/releases) [![License](https://img.shields.io/github/license/adivenxnataly/PerfGame?color=red&label=License)](https://github.com/adivenxnataly/PerfGame/blob/main/LICENSE)
 
 ![banner](https://github.com/adivenxnataly/PerfGame/blob/main/files/perfbannerv1.1.jpg)
@@ -24,7 +24,7 @@ Android FPS throttling is a Game Mode intervention that helps games run at a mor
 > The Interventions are available in Android 13.
 
 
-### How to use?
+## How to use?
 This module is based on WebUI (KernelSU), but support Magisk with KsuWebUI.
  - after reboot, you just need to enter the KSU/WebUI application, and select the `PerfGame` module and you will enter the game configuration display :
 ![screenshot](https://github.com/adivenxnataly/PerfGame/blob/main/files/perfgame.jpg)
