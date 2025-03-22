@@ -81,7 +81,7 @@ PerfGamev1.1-release.zip
   
 • then, type the `packagename` of the games :
 
-    echo "com.mobile.legends" > /data/adb/modules/PerfGame/webroot/gamelist.txt
+    echo "com.mobile.legends" >> /data/adb/modules/PerfGame/webroot/gamelist.txt
     
 > or for two games or more, you can type `\n`, like this: <br>
 > `echo "com.mobile.legends\ncom.miHoYo.GenshinImpact"`
