@@ -4,3 +4,4 @@ version=v1.1-release
 versionCode=11000
 author=Adinata | @Adivenxnataly
 description=Enable custom resolution & frame-rate mechanism for your game.
+updateJson=https://raw.githubusercontent.com/adivenxnataly/PerfGame/main/update/update.json
