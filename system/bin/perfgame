@@ -1,10 +1,4 @@
-DIR="/data/adb/modules/PerfGame/webroot/gamelist.txt"
-
-if [ ! -f "$DIR" ]; then
-    touch "$DIR"
-else
-    sleep 1
-fi
+#!/system/bin/sh
 
 def="\033[00m"
 r="\033[31m"
@@ -17,29 +11,53 @@ w="\033[37m"
 bld="\e[1m"
 nml="\e[0m"
 
-package() {
-    echo ""
-    echo -e $b $bld" Add/Delete Game for PerfGame"
-    echo ""
+TMPD="/data/local/tmp/PerfGame/backup"
+DIR="/data/adb/modules/PerfGame/webroot/gamelist.txt"
+
+function backup() {
+    cd
+    if [ -f "$DIR" ] && [ -s "$DIR" ]; then
+        cp "$DIR" "$TMP" 2>/dev/null
+        return 0
+    else
+        return 1
+    fi
+}
+
+function create() {
+    if [ ! -f "$DIR" ]; then
+        touch "$DIR"
+    else
+        sleep 1
+    fi
+    if [ ! -f "$TMPD" ]; then
+        mkdir "/data/local/tmp/PerfGame"
+        mkdir "$TMPD"
+    else
+        sleep 1
+    fi
+}
+
+TMP="$TMPD/gamelist.txt"
+create
+backup
+
+function package() {
+    echo -e $b $bld"\n Add/Delete Game for PerfGame\n"
     echo -e $def"   input must have$y validation$def for Add or Delete package:"
     echo -e $y"    a$def for Add"
-    echo -e $y"    d$def for Delete"
-    echo ""
+    echo -e $y"    d$def for Delete\n"
     echo -e "   for example:$y d - com.miHoYo.GenshinImpact"$def
-    echo -e "   thats deleting Genshin Impact in GameList"
-    echo ""
+    echo -e "   thats deleting Genshin Impact in GameList\n"
     echo -e $y"   status$def for Game List status. "
-    echo -e $y"   0$def for Exit."
-    echo ""
+    echo -e $y"   0$def for Exit.\n"
     echo -e -n $bld"  input :$nml$y "; read pkg
     pkgin
 }
 
-pkgin() {
+function pkgin() {
     if [ -z "$pkg" ]; then
-        echo ""
-        echo -e $r"  Input cannot be empty!"$def
-        echo ""
+        echo -e $r"\n  Input cannot be empty!\n"$def
         sleep 1
         clear
         package
@@ -47,25 +65,21 @@ pkgin() {
         clear
         menu
     elif [ ${#pkg} -lt 4 ] && [ "$pkg" != "status" ]; then
-        echo ""
-        echo -e $r"  Input is too short!"$def
-        echo ""
+        echo -e $r"\n  Input is too short!\n"$def
         sleep 1
         clear
         package
     elif [ "$pkg" == "status" ]; then
-        echo ""
         if [ -f "$DIR" ] && [ -s "$DIR" ]; then
             clear
-            echo ""
-            echo -e $b $bld" Game List status\n"$nml
+            echo -e $b $bld"\n\n Game List status\n"$nml
             echo -e $g"  Current Game List:\n"$def
             cat "$DIR" | sed 's/^/   /'
+            backup
         else
             echo -e $y"  Game List is empty."$def
         fi
-        echo ""
-        echo -e -n $bld"  Press any key to return..$nml$y "; read -n 1
+        echo -e -n $bld"\n  Press any key to return..$nml$y "; read -n 1
         clear
         package
     else
@@ -74,39 +88,29 @@ pkgin() {
         package_name=$(echo "$pkg" | awk '{print $3}')
         
         if [[ "$operation" != "a" && "$operation" != "d" ]]; then
-            echo ""
-            echo -e $r"  Invalid operation!$def" 
-            echo -e "  # Use $y'a'$def for Add or $y'd'$def for Delete."$def
-            echo ""
+            echo -e $r"\n  Invalid operation!$def\n  # Use $y'a'$def for Add or $y'd'$def for Delete.\n"$def
             sleep 5
             clear
             package
         elif [ -z "$package_name" ]; then
-            echo ""
-            echo -e $r"  Package name cannot be empty!"$def
-            echo ""
+            echo -e $r"\n  Package name cannot be empty!\n"$def
             sleep 1
             clear
             package
         else
             if [[ $(echo "$package_name" | grep -o "\." | wc -l) -lt 2 ]]; then
-                echo ""
-                echo -e $def"  Are you sure this is the package name?"
-                echo -e "  Package name:$y $package_name"$def
-                echo ""
+                echo -e $def"\n  Are you sure this is the package name?"
+                echo -e "  Package name:$y $package_name\n"$def
                 echo -e -n $bld"  Y/N: $nml$y"; read confirm
                 if [[ "$confirm" != "Y" && "$confirm" != "y" ]]; then
-                    echo ""
-                    echo -e $r"  Operation canceled by user."$def
-                    echo ""
+                    echo -e $r"\n  Operation canceled by user.\n"$def
                     sleep 2
                     clear
                     package
                 fi
             fi
             if [ "$operation" == "a" ]; then
-                echo ""
-                echo -e $g"  Adding $package_name to GameList..."$def
+                echo -e $g"\n  Adding $package_name to GameList..."$def
                 sleep 2
                 if grep -q "^$package_name$" $DIR; then
                     echo -e $y"  Package already exists!"$def
@@ -115,18 +119,19 @@ pkgin() {
                     if grep -q "^$package_name$" $DIR; then
                         sleep 1
                         echo -e $g"  Success! $package_name has been added to GameList."$def
+                        backup
                     else
                         sleep 1
-                        echo -e $r"  Not found adding package! Please contact the creator for this."$def
+                        echo -e $r"  ups, not found adding package!"$def
                     fi
                 fi
             elif [ "$operation" == "d" ]; then
-                echo ""
-                echo -e $r"  Deleting $package_name from GameList..."$def
+                echo -e $r"\n  Deleting $package_name from GameList..."$def
                 if grep -q "^$package_name$" $DIR; then
                     sed -i "/^$package_name$/d" $DIR
                     if ! grep -q "^$package_name$" $DIR; then
                         echo -e $r"  $package_name has been deleted from Game List."$def
+                        backup
                     else
                         echo -e $r"  Ups, package is still exist. Operation error! Please contact the creator for this."$def
                     fi
@@ -141,23 +146,87 @@ pkgin() {
     fi
 }
 
-menu() {
+function package_management() {
+    echo -e $b $bld"\n Package Management: in gamelist.txt\n"
+    echo -e $y"  1$def for reset"
+    echo -e $y"  2$def for restore"
+    echo -e $y"  status$def for gamelist status"
+    echo -e $y"\n  0$def for exit.\n"
+    backup
+    echo -e -n $bld"  option :$nml$y "; read pam
+    if [ -z "$pam" ]; then
+        echo -e "\n  Input cannot be empty!\n"$def
+        sleep 1
+        clear
+        package_management
+    elif [ "$pam" == "0" ]; then
+        clear
+        menu
+    elif [ "$pam" == "status" ]; then
+        if [ -f "$DIR" ] && [ -s "$DIR" ]; then
+            clear
+            echo -e $b $bld"\n\n Game List status\n"$nml
+            echo -e $g"  Current Game List:\n"$def
+            cat "$DIR" | sed 's/^/   /'
+        else
+            echo -e $y"  Game List is empty."$def
+        fi
+        echo -e -n $bld"\n  Press any key to return..$nml$y "; read -n 1
+        clear
+        package_management
+    elif [ "$pam" == "1" ]; then
+        if [ -f "$DIR" ]; then
+            echo -e $r"\n  reseting.."$def
+            sleep 1
+            rm -rf "$DIR"
+        else
+            sleep 1
+            echo -e "  ups, gamelist.txt not found!"
+        fi
+        if [ ! -f "$DIR" ]; then
+            sleep 1
+            echo -e $g"  success!$def\n\n  gamelist reseted!\n  # check$y status$def for validation.$def"; sleep 2
+            clear
+            package_management
+        else
+            echo -e $r"  ups, something wrong can't reseted gamelist!$def"; sleep 2
+            clear
+            package_management
+        fi
+    elif [ "$pam" == "2" ]; then
+        if [ -f "$TMP" ]; then
+            echo "\n  restoring.."
+            cp "$TMP" "$DIR"
+            sleep 2
+            echo -e $g"  success!$def\n  # check$y status$def for validation.$def"
+            sleep 2
+        else
+            sleep 1
+            echo -e $r"  ups, something wrong not found backup file!"
+        fi
+    else
+        echo -e $r"\n  wrong option!\n"$def
+        sleep 1
+        clear
+        package_management
+    fi
     clear
-    echo ""
-    echo -e $b $bld" PerfGame: configuration"
-    echo -e $def ""
+    package_management
+}
+
+function menu() {
+    clear
+    echo -e $b $bld"\n PerfGame: configuration\n"$def
     echo -e $y"  1.$def Add/Delete Game"
-    echo -e $y"  2.$def Reset All"
-    echo -e $y"  0.$def Exit"
-    echo ""
+    echo -e $y"  2.$def Reset/Restore All"
+    echo -e $y"  0.$def Exit\n"
     mainmenu
 }
 
-mainmenu() {
+function mainmenu() {
     echo -e -n $bld"  option :$nml$y "; read opt
     if [ -z "$opt" ]; then
-        echo -e $r"\n  Input cannot be empty!"$def
-        echo ""
+        echo -e $r"\n  Input cannot be empty!\n"$def
         sleep 1
         clear
         menu
@@ -165,25 +234,16 @@ mainmenu() {
         clear
         package
     elif [ $opt == "2" ]; then
-        echo -e $r" \n  delete all packagename in gamelist.txt\n"$def
-        rm -f "$DIR"; sleep 2
-        if [ ! -f "$DIR" ]; then
-            echo  -e $g"  done, gamelist.txt reseted!"$def
-            sleep 2
-        else
-            echo -e $r"  ups, something wrong.. packagename not reseted!"$def
-            sleep 2
-        fi
-    elif [ $opt == "0" ]; then
-        echo -e $r"\n  exit.."; sleep 1
         clear
-        echo -e $def""
+        package_management
+    elif [ $opt == "0" ]; then
+        echo ''
+        echo -e $r"  exit..\n"$def
+        sleep 1
         clear
         exit
     else
-        echo ""
-        echo -e $r"  wrong option!"$def
-        echo ""
+        echo -e $r"\n  wrong option!\n"$def
         sleep 1
         menu
     fi
