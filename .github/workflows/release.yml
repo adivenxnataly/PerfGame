@@ -53,7 +53,7 @@ jobs:
       run: |
         mkdir -p ${{ steps.module_prop.outputs.MODULE_NAME }}
         cp -r module/* ${{ steps.module_prop.outputs.MODULE_NAME }}/
-        rm -f ${{ steps.module_prop.outputs.MODULE_NAME }}/*.map
+        rm -f ${{ steps.module_prop.outputs.MODULE_NAME }}/webroot/*.map
         rm -f ${{ steps.module_prop.outputs.MODULE_NAME }}/mode.conf
 
     - name: Upload Release
