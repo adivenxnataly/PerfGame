@@ -135,13 +135,13 @@ set_perm_recursive "$MODPATH/system/bin" 0 0 0755 0755
 set_perm "$GAMELIST" 0 0 0644
 
 setup_icon() {
-    cp "$ICOND" "$MODICON"
+    cp "$MODPATH/perfgame.png" "$ICOND"
             
-    chmod 664 "$MODICON"
-    chown 6101:6101 "$MODICON"
-    chcon u:object_r:theme_data_file:s0 "$MODICON"
+    chmod 664 "$ICOND"
+    chown 6101:6101 "$ICOND"
+    chcon u:object_r:theme_data_file:s0 "$ICOND"
 
-    if [ ! -f "$MODICON" ]; then
+    if [ ! -f "$ICOND" ]; then
         ui_print "   using different directories.."
         mkdir -p "$MODPATH/data/local/tmp"
         cp "$ICOND" "/data/local/tmp/perfgame.png"
@@ -155,14 +155,11 @@ setup_icon() {
 
 ui_print ""
 ui_print " • Checking Icon file.."
-if [ -d "$MODPATH/data/system/theme" ]; then
-    ICON=$(find "$MODPATH/data/system/theme" -type f -name perfgame.png)
-    if [ -f "$ICON" ]; then
-        ICOND="$MODPATH/data/system/theme/perfgame.png"
-        IDIR="/data/system/theme/perfgame"
-        MODICON="$IDIR/perfgame.png"
-        if [ ! "$IDIR" ]; then
-            mkdir -p "$IDIR"
+if [ -f "$MODPATH/perfgame.png" ]; then
+    TDIR="/data/system/theme"
+    if [ -d "$TDIR" ]; then
+        ICOND="/data/system/theme/perfgame.png"
+        if [ -f "$ICOND" ]; then
             setup_icon
             rm -r $ICOND
         else
@@ -170,9 +167,9 @@ if [ -d "$MODPATH/data/system/theme" ]; then
             rm -r $ICOND
         fi
     else
-        ui_print "   file not found!"
+        ui_print "   directory not found!"
         ui_print ""
     fi
 else
-    ui_print "   directory not found!"
+    ui_print "   file not found!"
 fi
