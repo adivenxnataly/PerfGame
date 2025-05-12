@@ -1,7 +1,7 @@
 ## PerfGame
 [![Releases](https://img.shields.io/github/v/release/adivenxnataly/PerfGame?color=green&label=Release&logo=github)](https://github.com/adivenxnataly/PerfGame/releases) [![License](https://img.shields.io/github/license/adivenxnataly/PerfGame?color=red&label=License)](https://github.com/adivenxnataly/PerfGame/blob/main/LICENSE)
 
-![banner](https://github.com/adivenxnataly/PerfGame/blob/main/files/perfbannerv1.1.jpg)
+![banner](https://github.com/adivenxnataly/PerfGame/blob/main/assets/perfbanner.jpg)
 PerfGame is a module that implements **Game Interventions**.
 
 <details>
