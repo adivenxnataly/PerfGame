@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-# Copyright (C) Adinata <adinata.ch@proton.me>
+# Copyright (C) 2025 adivenxnataly <adinata.ch@proton.me>
 # License: Apache 2.0
 
 [ ! "$MODPATH" ] && MODPATH=${0%/*}
