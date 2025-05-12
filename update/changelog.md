@@ -3,7 +3,7 @@
 
 > [!warning]
 > **ABI required**: arm64-v8a, armeabi-v7a
-#### v2.0-release
+### v2.0-release
 
 **changelog** :
 - better UI display and animation
