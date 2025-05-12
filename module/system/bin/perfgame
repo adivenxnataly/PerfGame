@@ -1,0 +1,124 @@
+#!/system/bin/sh
+
+# Copyright (C) 2025 adivenxnataly <adinata.ch@proton.me>
+# License: Apache 2.0
+
+sett() {
+    if [ -f "$2" ]; then
+        chmod 644 "$2"
+        echo "$1" > "$2" 2>/dev/null
+        chmod 444 "$2"
+    fi
+}
+
+# this tuning only for MTK devices
+performance() {
+    cpu="/sys/devices/system/cpu"
+    
+    if [ -d "$cpu/cpufreq/policy0" ]; then
+        freq=$(cat $cpu/cpufreq/policy0/scaling_available_frequencies 2>/dev/null | tr ' ' '\n' | sort -nr | head -n 1)
+        [ -z "$freq" ] && freq=$(cat $cpu/cpufreq/policy0/cpuinfo_max_freq 2>/dev/null)
+        [ -n "$freq" ] && {
+            sett "$freq" "$cpu/cpufreq/policy0/scaling_min_freq"
+            sett "$freq" "$cpu/cpufreq/policy0/scaling_max_freq"
+            sett "performance" "$cpu/cpufreq/policy0/scaling_governor"
+        }
+    fi
+
+    if [ -d "$cpu/cpufreq/policy6" ]; then
+        freq=$(cat $cpu/cpufreq/policy6/scaling_available_frequencies 2>/dev/null | tr ' ' '\n' | sort -nr | head -n 1)
+        [ -z "$freq" ] && freq=$(cat $cpu/cpufreq/policy6/cpuinfo_max_freq 2>/dev/null)
+        [ -n "$freq" ] && {
+            sett "$freq" "$cpu/cpufreq/policy6/scaling_min_freq"
+            sett "$freq" "$cpu/cpufreq/policy6/scaling_max_freq"
+            sett "performance" "$cpu/cpufreq/policy6/scaling_governor"
+        }
+    fi
+
+    if [ -d "/proc/gpufreq" ]; then
+        freq=$(cat /proc/gpufreq/gpufreq_opp_dump 2>/dev/null | grep -o 'freq = [0-9]*' | sed 's/freq = //' | sort -nr | head -n 1)
+        [ -n "$freq" ] && sett "$freq" "/proc/gpufreq/gpufreq_opp_freq"
+    elif [ -d "/proc/gpufreqv2" ]; then
+        sett "0" "/proc/gpufreqv2/fix_target_opp_index"
+    fi
+
+    if [ -d "/dev/cpuset" ]; then
+        sett "0-7" "/dev/cpuset/top-app/cpus"
+        sett "0-5" "/dev/cpuset/foreground/cpus"
+        sett "0-3" "/dev/cpuset/background/cpus"
+        sett "0-3" "/dev/cpuset/system-background/cpus"
+    fi
+}
+
+balance() {
+    cpu="/sys/devices/system/cpu"
+    
+    if [ -d "$cpu/cpufreq/policy0" ]; then
+        min_freq=$(cat $cpu/cpufreq/policy0/cpuinfo_min_freq 2>/dev/null)
+        max_freq=$(cat $cpu/cpufreq/policy0/cpuinfo_max_freq 2>/dev/null)
+        [ -n "$min_freq" ] && sett "$min_freq" "$cpu/cpufreq/policy0/scaling_min_freq"
+        [ -n "$max_freq" ] && sett "$max_freq" "$cpu/cpufreq/policy0/scaling_max_freq"
+        sett "schedutil" "$cpu/cpufreq/policy0/scaling_governor"
+    fi
+
+    if [ -d "$cpu/cpufreq/policy6" ]; then
+        min_freq=$(cat $cpu/cpufreq/policy6/cpuinfo_min_freq 2>/dev/null)
+        max_freq=$(cat $cpu/cpufreq/policy6/cpuinfo_max_freq 2>/dev/null)
+        [ -n "$min_freq" ] && sett "$min_freq" "$cpu/cpufreq/policy6/scaling_min_freq"
+        [ -n "$max_freq" ] && sett "$max_freq" "$cpu/cpufreq/policy6/scaling_max_freq"
+        sett "schedutil" "$cpu/cpufreq/policy6/scaling_governor"
+    fi
+
+    if [ -d "/proc/gpufreqv2" ]; then
+        sett "-1" "/proc/gpufreqv2/fix_target_opp_index"
+    fi
+
+    if [ -d "/dev/cpuset" ]; then
+        sett "0-7" "/dev/cpuset/top-app/cpus"
+        sett "0-7" "/dev/cpuset/foreground/cpus"
+        sett "0-5" "/dev/cpuset/background/cpus"
+        sett "0-5" "/dev/cpuset/system-background/cpus"
+    fi
+}
+
+powersave() {
+    cpu="/sys/devices/system/cpu"
+    
+    if [ -d "$cpu/cpufreq/policy0" ]; then
+        min_freq=$(cat $cpu/cpufreq/policy0/cpuinfo_min_freq 2>/dev/null)
+        max_freq=$(cat $cpu/cpufreq/policy0/scaling_available_frequencies 2>/dev/null | tr ' ' '\n' | sort -n | head -n 1)
+        [ -n "$min_freq" ] && sett "$min_freq" "$cpu/cpufreq/policy0/scaling_min_freq"
+        [ -n "$max_freq" ] && sett "$max_freq" "$cpu/cpufreq/policy0/scaling_max_freq"
+        sett "powersave" "$cpu/cpufreq/policy0/scaling_governor"
+    fi
+
+    if [ -d "$cpu/cpufreq/policy6" ]; then
+        min_freq=$(cat $cpu/cpufreq/policy6/cpuinfo_min_freq 2>/dev/null)
+        max_freq=$(cat $cpu/cpufreq/policy6/scaling_available_frequencies 2>/dev/null | tr ' ' '\n' | sort -n | head -n 1)
+        [ -n "$min_freq" ] && sett "$min_freq" "$cpu/cpufreq/policy6/scaling_min_freq"
+        [ -n "$min_freq" ] && sett "$min_freq" "$cpu/cpufreq/policy6/scaling_max_freq"
+        sett "powersave" "$cpu/cpufreq/policy6/scaling_governor"
+    fi
+
+    if [ -d "/proc/gpufreq" ]; then
+        freq=$(cat /proc/gpufreq/gpufreq_opp_dump 2>/dev/null | grep -o 'freq = [0-9]*' | sed 's/freq = //' | tail -n 1)
+        sett "$freq" "/proc/gpufreq/gpufreq_opp_freq"
+    elif [ -d "/proc/gpufreqv2" ]; then
+        sett "15" "/proc/gpufreqv2/fix_target_opp_index"
+    fi
+
+    if [ -d "/dev/cpuset" ]; then
+        sett "0-3" "/dev/cpuset/top-app/cpus"
+        sett "0-3" "/dev/cpuset/foreground/cpus"
+        sett "0" "/dev/cpuset/background/cpus"
+        sett "0" "/dev/cpuset/system-background/cpus"
+    fi
+}
+
+case "${1:-performance}" in
+    "performance") performance ;;
+    "balance") balance ;;
+    "powersave"|"saver") powersave ;;
+    *) exit 1 ;;
+esac
+

@@ -1,0 +1,7 @@
+id=PerfGame
+name=PerfGame
+version=v2.0-release
+versionCode=20000
+author=Adinata | @Adivenxnataly
+description=Enable custom resolution & frame-rate mechanism for your game.
+updateJson=https://raw.githubusercontent.com/adivenxnataly/PerfGame/main/update/update.json
