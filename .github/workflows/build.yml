@@ -1,0 +1,39 @@
+name: Android NDK
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - jni/src/perfutils.c
+      - jni/*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+      
+    - name: Setup NDK
+      uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: 'r25b'
+
+    - name: Build Executable with NDK
+      run: |
+        export NDK_PROJECT_PATH=$GITHUB_WORKSPACE
+        export PATH=$PATH:$ANDROID_NDK_ROOT
+        
+        ndk-build \
+          NDK_PROJECT_PATH=. \
+          APP_BUILD_SCRIPT=./jni/Android.mk \
+          NDK_APPLICATION_MK=./jni/Application.mk \
+          V=1
+        
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: perfutils
+        path: libs/

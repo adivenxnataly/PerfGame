@@ -1,0 +1,63 @@
+name: Build Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/release.yml'
+      - 'webui/**'
+      - 'module/**'
+      - 'update/**'
+
+jobs:
+  build:
+    name: Build Release
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Build WebUI
+      working-directory: ./webui
+      run: |
+        npm install
+        npm run build
+
+    - name: Download Executable Daemon
+      uses: dawidd6/action-download-artifact@v3
+      with:
+        name: perfutils
+        path: module/libs/
+        workflow: build.yml
+        branch: main
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Parse module.prop
+      id: module_prop
+      run: |
+        NAME=$(grep '^name=' module/module.prop | cut -d'=' -f2)
+        VERSION=$(grep '^version=' module/module.prop | cut -d'=' -f2)
+        MODULE_NAME="${NAME}${VERSION}"
+        
+        echo "MODULE_NAME=${MODULE_NAME}" >> $GITHUB_OUTPUT
+        echo "Module name: ${MODULE_NAME}"
+
+    - name: Prepare Module Structure
+      run: |
+        mkdir -p ${{ steps.module_prop.outputs.MODULE_NAME }}
+        cp -r module/* ${{ steps.module_prop.outputs.MODULE_NAME }}/
+        rm -f ${{ steps.module_prop.outputs.MODULE_NAME }}/*.map
+        rm -f ${{ steps.module_prop.outputs.MODULE_NAME }}/mode.conf
+
+    - name: Upload Release
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ steps.module_prop.outputs.MODULE_NAME }}
+        path: ${{ steps.module_prop.outputs.MODULE_NAME }}
