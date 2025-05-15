@@ -32,10 +32,10 @@ Android FPS throttling is a Game Mode intervention that helps games run at a mor
 > This requires at least Android 12 (API 31) and ARM devices.
 
 ## How to use?
-This module is based on **WebUI** (KernelSU), but support Magisk with [KsuWebUI](https://github.com/5ec1cff/KsuWebUIStandalone).
+This module is based on **WebUI** (KernelSU), but support Magisk with [KsuWebUI](https://github.com/adivenxnataly/KsuWebUI).
  - after reboot, you just need to enter the KSU/WebUI application, and select the `PerfGame` module and you will enter the game configuration display :
 
-<img width="50%" src="https://github.com/adivenxnataly/perfgame-main/blob/main/assets/ui/perfgame.jpg"/><img width="50%" src="https://github.com/adivenxnataly/perfgame-main/blob/main/assets/ui/perfgame_bar-overlay.jpg"/>
+<img width="50%" src="https://github.com/adivenxnataly/PerfGame/blob/main/assets/ui/perfgame.jpg"/><img width="50%" src="https://github.com/adivenxnataly/PerfGame/blob/main/assets/ui/perfgame_bar-overlay.jpg"/>
 
 ### PerfGame
 #### Main Function
@@ -62,11 +62,11 @@ In version [2.0](https://github.com/adivenxnataly/PerfGame/releases/download/2.0
 - **Display style**:
   <br>
   > this changes how the screen uses color tones <br>
-  > <img width="80%" src="https://github.com/adivenxnataly/perfgame-main/blob/main/assets/2.0/display_style.png"/>
+  > <img width="80%" src="https://github.com/adivenxnataly/PerfGame/blob/main/assets/2.0/display_style.png"/>
 - **Color adjustment**:
   <br>
   > change saturation for visual enhancement <br>
-  > <img width="80%" src="https://github.com/adivenxnataly/perfgame-main/blob/main/assets/2.0/color_adjustment.png"/>
+  > <img width="80%" src="https://github.com/adivenxnataly/PerfGame/blob/main/assets/2.0/color_adjustment.png"/>
 
 ### How for not supported games? 
 you can use manual step to adding `packagename` with click bar button on right bottom!
